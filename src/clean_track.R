@@ -7,9 +7,26 @@
 
 clean_track <- function(dataframe){
   
+  
+  plot(dataframe$x, dataframe$y, pch=19)
+  
   # Zero values should go to NA before we do anything
 
   dataframe[dataframe == 0] <- NA
+  
+  
+  # Source helper function
+  if(!exists("copy_NA", mode="function")) source("src/copy_NA.R")
+  
+  # We use the copy_NA function to roll over the gaps, we copy the last position
+  
+  dataframe$x.fill <- copy_NA(dataframe$x)
+  dataframe$y.fill <- copy_NA(dataframe$y)
+  
+  
+  
+  points(dataframe$x.fill, dataframe$y.fill, col=alpha("red", 0.3), pch=19)
+  
   
   # calculate distnace between rows
   # This is xy distance so we will consider big steps in 2D
@@ -25,7 +42,7 @@ clean_track <- function(dataframe){
     
   }
   
-  return(li)
+  return(dataframe)
   
 }
 

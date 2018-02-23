@@ -1,6 +1,9 @@
-### This function will copy the value to the one that is nearest to the particular NA
+### This function will replace NAs by copying the closest value
+### The default is to copy from the bottom
+### The function is vectorized
 
-copy_NA <- function(dat) {
+
+copy_NA <- function(dat, split.gap=FALSE) {
   N <- length(dat)
   na.pos <- which(is.na(dat))
   
@@ -16,7 +19,18 @@ copy_NA <- function(dat) {
   left.dist  <- na.pos - left.pos
   right.dist <- right.pos - na.pos
   
-  dat[na.pos] <- ifelse(left.dist <= right.dist,
-                        dat[left.pos], dat[right.pos])
+  
+  
+  
+  if(split.gap){
+    dat[na.pos] <- ifelse(left.dist <= right.dist,
+                          dat[left.pos], dat[right.pos])  
+  } else{
+  
+  # defaults to left (left being before)  
+    dat[na.pos] <- dat[left.pos]
+
+  }
+  
   return(dat)
 }
