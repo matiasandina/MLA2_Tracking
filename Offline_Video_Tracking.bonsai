@@ -5,14 +5,14 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:HsvThreshold">
           <q1:Lower>
-            <q1:Val0>180</q1:Val0>
-            <q1:Val1>192</q1:Val1>
-            <q1:Val2>190</q1:Val2>
+            <q1:Val0>160</q1:Val0>
+            <q1:Val1>180</q1:Val1>
+            <q1:Val2>150</q1:Val2>
             <q1:Val3>0</q1:Val3>
           </q1:Lower>
           <q1:Upper>
             <q1:Val0>255</q1:Val0>
-            <q1:Val1>255</q1:Val1>
+            <q1:Val1>244</q1:Val1>
             <q1:Val2>255</q1:Val2>
             <q1:Val3>255</q1:Val3>
           </q1:Upper>
@@ -21,8 +21,8 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:MorphologicalOperator">
           <q1:Size>
-            <q1:Width>4</q1:Width>
-            <q1:Height>4</q1:Height>
+            <q1:Width>10</q1:Width>
+            <q1:Height>10</q1:Height>
           </q1:Size>
           <q1:Anchor>
             <q1:X>1</q1:X>
@@ -56,21 +56,6 @@
         </Combinator>
       </Expression>
       <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:MorphologicalOperator">
-          <q1:Size>
-            <q1:Width>11</q1:Width>
-            <q1:Height>11</q1:Height>
-          </q1:Size>
-          <q1:Anchor>
-            <q1:X>1</q1:X>
-            <q1:Y>1</q1:Y>
-          </q1:Anchor>
-          <q1:Shape>Rectangle</q1:Shape>
-          <q1:Iterations>1</q1:Iterations>
-          <q1:Operation>Close</q1:Operation>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:LargestBinaryRegion" />
       </Expression>
       <Expression xsi:type="Combinator">
@@ -79,8 +64,8 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:MorphologicalOperator">
           <q1:Size>
-            <q1:Width>11</q1:Width>
-            <q1:Height>11</q1:Height>
+            <q1:Width>3</q1:Width>
+            <q1:Height>3</q1:Height>
           </q1:Size>
           <q1:Anchor>
             <q1:X>1</q1:X>
@@ -88,7 +73,7 @@
           </q1:Anchor>
           <q1:Shape>Rectangle</q1:Shape>
           <q1:Iterations>1</q1:Iterations>
-          <q1:Operation>Close</q1:Operation>
+          <q1:Operation>Erode</q1:Operation>
         </Combinator>
       </Expression>
       <Expression xsi:type="Combinator">
@@ -181,7 +166,7 @@
     <Edges>
       <Edge>
         <From>0</From>
-        <To>15</To>
+        <To>14</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
@@ -191,7 +176,7 @@
       </Edge>
       <Edge>
         <From>1</From>
-        <To>4</To>
+        <To>3</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
@@ -201,27 +186,27 @@
       </Edge>
       <Edge>
         <From>2</From>
-        <To>12</To>
+        <To>11</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>3</From>
-        <To>6</To>
+        <To>5</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>4</From>
-        <To>3</To>
+        <To>12</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>5</From>
-        <To>13</To>
+        <To>4</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>6</From>
-        <To>5</To>
+        <To>7</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
@@ -241,27 +226,22 @@
       </Edge>
       <Edge>
         <From>10</From>
-        <To>11</To>
+        <To>15</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>11</From>
+        <To>6</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>11</From>
+        <To>13</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>12</From>
         <To>16</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
-        <From>12</From>
-        <To>7</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
-        <From>12</From>
-        <To>14</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
-        <From>13</From>
-        <To>17</To>
         <Label>Source1</Label>
       </Edge>
     </Edges>
