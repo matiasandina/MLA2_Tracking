@@ -21,8 +21,8 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:MorphologicalOperator">
           <q1:Size>
-            <q1:Width>10</q1:Width>
-            <q1:Height>10</q1:Height>
+            <q1:Width>3</q1:Width>
+            <q1:Height>3</q1:Height>
           </q1:Size>
           <q1:Anchor>
             <q1:X>1</q1:X>
@@ -35,7 +35,7 @@
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:FileCapture">
-          <q1:FileName>rgb.avi</q1:FileName>
+          <q1:FileName>C:\Users\Matias\Desktop\Raw_video2018-02-23T10_43_13.avi</q1:FileName>
           <q1:PlaybackRate>0</q1:PlaybackRate>
           <q1:StartPosition>0</q1:StartPosition>
           <q1:PositionUnits>Frames</q1:PositionUnits>
@@ -52,7 +52,7 @@
             <q1:Y>0</q1:Y>
           </q1:Offset>
           <q1:MinArea>1500</q1:MinArea>
-          <q1:MaxArea>10000</q1:MaxArea>
+          <q1:MaxArea>20000</q1:MaxArea>
         </Combinator>
       </Expression>
       <Expression xsi:type="Combinator">
@@ -116,59 +116,36 @@
       <Expression xsi:type="MemberSelector">
         <Selector>Source.Centroid</Selector>
       </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:VideoWriter">
-          <q1:FileName>redchannel.avi</q1:FileName>
-          <q1:Suffix>Timestamp</q1:Suffix>
-          <q1:Buffered>true</q1:Buffered>
-          <q1:Overwrite>false</q1:Overwrite>
-          <q1:FourCC>FMP4</q1:FourCC>
-          <q1:FrameRate>30</q1:FrameRate>
-          <q1:FrameSize>
-            <q1:Width>0</q1:Width>
-            <q1:Height>0</q1:Height>
-          </q1:FrameSize>
-          <q1:ResizeInterpolation>NearestNeighbor</q1:ResizeInterpolation>
-        </Combinator>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.MajorAxisLength</Selector>
       </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:VideoWriter">
-          <q1:FileName>whitechannel.avi</q1:FileName>
-          <q1:Suffix>Timestamp</q1:Suffix>
-          <q1:Buffered>true</q1:Buffered>
-          <q1:Overwrite>false</q1:Overwrite>
-          <q1:FourCC>FMP4</q1:FourCC>
-          <q1:FrameRate>30</q1:FrameRate>
-          <q1:FrameSize>
-            <q1:Width>0</q1:Width>
-            <q1:Height>0</q1:Height>
-          </q1:FrameSize>
-          <q1:ResizeInterpolation>NearestNeighbor</q1:ResizeInterpolation>
-        </Combinator>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.MinorAxisLength</Selector>
       </Expression>
       <Expression xsi:type="q2:CsvWriter">
-        <q2:FileName>red_centroids.csv</q2:FileName>
+        <q2:FileName>data\red_centroids.csv</q2:FileName>
         <q2:Append>false</q2:Append>
         <q2:Overwrite>false</q2:Overwrite>
         <q2:Suffix>Timestamp</q2:Suffix>
         <q2:IncludeHeader>true</q2:IncludeHeader>
         <q2:Selector>Source.X,Source.Y</q2:Selector>
       </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="Zip" />
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.Orientation</Selector>
+      </Expression>
       <Expression xsi:type="q2:CsvWriter">
-        <q2:FileName>white_centroids.csv</q2:FileName>
+        <q2:FileName>data\white_centroids.csv</q2:FileName>
         <q2:Append>false</q2:Append>
         <q2:Overwrite>false</q2:Overwrite>
         <q2:Suffix>Timestamp</q2:Suffix>
         <q2:IncludeHeader>true</q2:IncludeHeader>
-        <q2:Selector>Source.X,Source.Y</q2:Selector>
+        <q2:Selector>Source.Item4.X,Source.Item4.Y,Source.Item1,Source.Item2,Source.Item3</q2:Selector>
       </Expression>
     </Nodes>
     <Edges>
-      <Edge>
-        <From>0</From>
-        <To>14</To>
-        <Label>Source1</Label>
-      </Edge>
       <Edge>
         <From>0</From>
         <To>1</To>
@@ -197,6 +174,21 @@
       <Edge>
         <From>4</From>
         <To>12</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>4</From>
+        <To>13</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>4</From>
+        <To>14</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>4</From>
+        <To>17</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
@@ -235,12 +227,27 @@
         <Label>Source1</Label>
       </Edge>
       <Edge>
-        <From>11</From>
-        <To>13</To>
+        <From>12</From>
+        <To>16</To>
+        <Label>Source4</Label>
+      </Edge>
+      <Edge>
+        <From>13</From>
+        <To>16</To>
+        <Label>Source3</Label>
+      </Edge>
+      <Edge>
+        <From>14</From>
+        <To>16</To>
+        <Label>Source2</Label>
+      </Edge>
+      <Edge>
+        <From>16</From>
+        <To>18</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
-        <From>12</From>
+        <From>17</From>
         <To>16</To>
         <Label>Source1</Label>
       </Edge>
@@ -253,7 +260,7 @@
     <Type>Bonsai.Vision.FindContours, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
     <Type>Bonsai.Vision.LargestBinaryRegion, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
     <Type>Bonsai.Vision.BinaryRegionAnalysis, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.VideoWriter, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
     <Type>Bonsai.IO.CsvWriter, Bonsai.System, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Reactive.Zip, Bonsai.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
   </ExtensionTypes>
 </WorkflowBuilder>
