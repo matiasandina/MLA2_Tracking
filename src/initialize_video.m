@@ -1,6 +1,6 @@
 function [videoObject, numberOfFrames] = initialize_video
 
-[baseName, folder] = uigetfile({'*.avi', '*.mp4'});
+[baseName, folder] = uigetfile({'*.avi', '*.mp4'}, 'Select a video file');
 fullFileName = fullfile(folder, baseName);
 
 % Check if the video file actually exists in the current folder or on the search path.

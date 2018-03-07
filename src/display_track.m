@@ -1,9 +1,14 @@
 
 
-function display_track(centroids, startFrame)
+function display_track(centroids, startFrame, stopFrame)
 
-% Initialize video with helper function
+% Initialize video
+if (~exist('videoObject'))
 [videoObject, numberOfFrames] = initialize_video;
+end
+
+
+figure_1 = subplot(1,1,1);
 
 for k = startFrame : numberOfFrames
 
@@ -13,9 +18,8 @@ for k = startFrame : numberOfFrames
  thisFrame=rgb2gray(read(videoObject,k)); % DO NOT change to readFrame!
 
   
-   if k==startFrame
+  if k==startFrame
          
-  figure_1 = subplot(1,1,1);     
   hImage = imshow(thisFrame, 'Parent' ,figure_1);
   hold on
   plot(centroids(k,1),centroids(k,2), 'rx', 'markers',12)
@@ -23,28 +27,25 @@ for k = startFrame : numberOfFrames
    else
   % RGB figure_1
   set(hImage,'CData', thisFrame);
-  
-  
-  % erase old points
-  % dataH = get(gca, 'Children');
-
-  
-  if (rem(k, 10)==0)
+    
+  % plot only every 2nd position
+  if (rem(k, 2)==0)
   
   plot(centroids(k,1),centroids(k,2), 'rx', 'markers',12)    
-      
-  % erase_until = k-20 ;
-  % erase_from = length(dataH) - 1;  
-
-  % Seems counter intuitive but it's because later frames get put on top
-  % set(dataH(erase_until:erase_from), 'visible', 'off');
+  
+  pause(0.1)
   end
   
   drawnow;
        
+  end
+  
+  % Adding a 'stop' here
+   if (k == stopFrame)
+       
+    sprintf('finishing at stopFrame %d', stopFrame)   
+       return
    end
-   
-   
    
 
 end

@@ -1,4 +1,4 @@
-function [centroid_final] = hsv_transform(plotMe, startFrame, saveMe)
+function [centroid_final, videoObject, numberOfFrames] = hsv_transform(plotMe, startFrame, saveMe)
 
 tic
 
@@ -123,20 +123,6 @@ for k = startFrame : numberOfFrames
             figure_4 = subplot(2,2,4);
             set(gca,'XLim',[0 size(thisFrame, 2)], 'YLim',[0 size(thisFrame,1)]);
             set(gca, 'YDir', 'reverse')
-            
-            % This format has issues with cData because to move them around you 'make them active'
-            %      figure;
-            %      figure_1 = subplot(1,1,1);
-            %
-            %      figure;
-            %      figure_2 = subplot(1,1,1);
-            %
-            %      figure;
-            %      figure_3 = subplot(1,1,1);
-            %
-            %      figure;
-            %      figure_4 = subplot(1,1,1);
-            
             
             hImage = imshow(thisFrame, 'Parent' ,figure_1);
             iImage = imshow(BW, 'Parent', figure_2);
