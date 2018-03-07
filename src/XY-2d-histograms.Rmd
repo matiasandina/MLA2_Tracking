@@ -1,0 +1,85 @@
+---
+title: "XY-Position-2D-Histograms"
+author: "Matias Andina"
+date: "March 7, 2018"
+output: html_document
+---
+
+```{r load, echo=F, warning=FALSE}
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(RColorBrewer))
+suppressPackageStartupMessages(library(KernSmooth))
+suppressPackageStartupMessages(library(raster))
+suppressPackageStartupMessages(library(gplots))
+suppressPackageStartupMessages(library(ggplot2))
+
+rat_pos <- read.csv('rloess_smooth.csv')
+```
+
+
+# Documentation 
+
+* http://stat405.had.co.nz/ggmap.pdf
+* https://stackoverflow.com/questions/24078774/overlay-two-ggplot2-stat-density2d-plots-with-alpha-channels?lq=1
+* https://www.r-bloggers.com/5-ways-to-do-2d-histograms-in-r/
+ 
+```{r setup-bins}
+# Get color palette 
+
+refCol <- colorRampPalette(rev(brewer.pal(6,'Spectral')))
+mycol <- refCol(6)
+
+# define bin sizes
+bin_size <- 40
+
+xbins <- 640/bin_size
+ybins <- 480/bin_size
+```
+
+# ggplot2 options
+
+```{r ggplot2-option-1}
+ggplot(rat_pos, aes(X,Y)) +
+  stat_density2d(geom = 'tile', aes(fill = ..density..), contour = FALSE,
+                 n = c(xbins, ybins), ) +
+  #geom_point() + 
+  #geom_path(alpha=0.1) +
+  coord_equal() +
+  theme_minimal() +
+  scale_fill_gradientn(colors =  mycol) +
+  geom_vline(xintercept = c(0,640))+
+  geom_hline(yintercept = c(0,480))
+#  theme_void()
+```
+
+Calculating density externally, smoother.
+
+```{r ggplot2-option-2}
+bins <- bkde2D(as.matrix(rat_pos[,1:2]), bandwidth = c(xbins, ybins),
+               gridsize = c(640L, 480L))
+
+bins_to_plot <- melt(bins$fhat)
+
+
+ggplot(bins_to_plot, aes(Var1, Var2, fill = value)) +
+  geom_raster()+
+  coord_equal() +
+  theme_minimal() +
+  scale_fill_gradientn(colors =  mycol) +
+  geom_vline(xintercept = c(0,640))+
+  geom_hline(yintercept = c(0,480))
+```
+
+# Using raster package
+
+```{r raster-package}
+r <- raster(xmn=0, ymn=0, xmx=640, ymx=480, res=20)
+x <- rasterize(rat_pos[,1:2], r, fun='count')
+plot(x, xlim=c(0,640), ylim=c(0,480), xaxt='n', ann=FALSE, yaxt='n')
+
+# create plot
+hist2d(rat_pos[,1:2], same.scale=TRUE,
+       nbins=c(xbins, ybins),
+       col = mycol, xaxt='n', ann=FALSE, yaxt='n')
+```
+
