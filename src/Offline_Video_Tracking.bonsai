@@ -1,266 +1,516 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <WorkflowBuilder Version="2.3.0">
-  <Workflow xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:q2="clr-namespace:Bonsai.IO;assembly=Bonsai.System" xmlns:q1="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision" xmlns="https://horizongir.org/bonsai">
+  <Workflow xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:q2="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision" xmlns:q1="clr-namespace:Bonsai.IO;assembly=Bonsai.System" xmlns="https://horizongir.org/bonsai">
     <Nodes>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:HsvThreshold">
-          <q1:Lower>
-            <q1:Val0>160</q1:Val0>
-            <q1:Val1>180</q1:Val1>
-            <q1:Val2>150</q1:Val2>
-            <q1:Val3>0</q1:Val3>
-          </q1:Lower>
-          <q1:Upper>
-            <q1:Val0>255</q1:Val0>
-            <q1:Val1>244</q1:Val1>
-            <q1:Val2>255</q1:Val2>
-            <q1:Val3>255</q1:Val3>
-          </q1:Upper>
-        </Combinator>
+      <Expression xsi:type="q1:CsvWriter">
+        <q1:FileName>data\red_centroids.csv</q1:FileName>
+        <q1:Append>false</q1:Append>
+        <q1:Overwrite>false</q1:Overwrite>
+        <q1:Suffix>Timestamp</q1:Suffix>
+        <q1:IncludeHeader>true</q1:IncludeHeader>
+        <q1:Selector>Source.X,Source.Y</q1:Selector>
       </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:MorphologicalOperator">
-          <q1:Size>
-            <q1:Width>3</q1:Width>
-            <q1:Height>3</q1:Height>
-          </q1:Size>
-          <q1:Anchor>
-            <q1:X>1</q1:X>
-            <q1:Y>1</q1:Y>
-          </q1:Anchor>
-          <q1:Shape>Rectangle</q1:Shape>
-          <q1:Iterations>1</q1:Iterations>
-          <q1:Operation>Erode</q1:Operation>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:FileCapture">
-          <q1:FileName>C:\Users\Matias\Desktop\Raw_video2018-02-23T10_43_13.avi</q1:FileName>
-          <q1:PlaybackRate>0</q1:PlaybackRate>
-          <q1:StartPosition>0</q1:StartPosition>
-          <q1:PositionUnits>Frames</q1:PositionUnits>
-          <q1:Loop>false</q1:Loop>
-          <q1:Playing>true</q1:Playing>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:FindContours">
-          <q1:Mode>External</q1:Mode>
-          <q1:Method>ChainApproxNone</q1:Method>
-          <q1:Offset>
-            <q1:X>0</q1:X>
-            <q1:Y>0</q1:Y>
-          </q1:Offset>
-          <q1:MinArea>1500</q1:MinArea>
-          <q1:MaxArea>20000</q1:MaxArea>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:LargestBinaryRegion" />
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:BinaryRegionAnalysis" />
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:MorphologicalOperator">
-          <q1:Size>
-            <q1:Width>3</q1:Width>
-            <q1:Height>3</q1:Height>
-          </q1:Size>
-          <q1:Anchor>
-            <q1:X>1</q1:X>
-            <q1:Y>1</q1:Y>
-          </q1:Anchor>
-          <q1:Shape>Rectangle</q1:Shape>
-          <q1:Iterations>1</q1:Iterations>
-          <q1:Operation>Erode</q1:Operation>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:FindContours">
-          <q1:Mode>External</q1:Mode>
-          <q1:Method>ChainApproxNone</q1:Method>
-          <q1:Offset>
-            <q1:X>0</q1:X>
-            <q1:Y>0</q1:Y>
-          </q1:Offset>
-          <q1:MinArea xsi:nil="true" />
-          <q1:MaxArea xsi:nil="true" />
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:BinaryRegionAnalysis" />
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:LargestBinaryRegion" />
-      </Expression>
-      <Expression xsi:type="MemberSelector">
-        <Selector>Source.Centroid</Selector>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="q1:HsvThreshold">
-          <q1:Lower>
-            <q1:Val0>57</q1:Val0>
-            <q1:Val1>44</q1:Val1>
-            <q1:Val2>126</q1:Val2>
-            <q1:Val3>0</q1:Val3>
-          </q1:Lower>
-          <q1:Upper>
-            <q1:Val0>114</q1:Val0>
-            <q1:Val1>107</q1:Val1>
-            <q1:Val2>211</q1:Val2>
-            <q1:Val3>255</q1:Val3>
-          </q1:Upper>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="MemberSelector">
-        <Selector>Source.Centroid</Selector>
-      </Expression>
-      <Expression xsi:type="MemberSelector">
-        <Selector>Source.MajorAxisLength</Selector>
-      </Expression>
-      <Expression xsi:type="MemberSelector">
-        <Selector>Source.MinorAxisLength</Selector>
-      </Expression>
-      <Expression xsi:type="q2:CsvWriter">
-        <q2:FileName>data\red_centroids.csv</q2:FileName>
-        <q2:Append>false</q2:Append>
-        <q2:Overwrite>false</q2:Overwrite>
-        <q2:Suffix>Timestamp</q2:Suffix>
-        <q2:IncludeHeader>true</q2:IncludeHeader>
-        <q2:Selector>Source.X,Source.Y</q2:Selector>
+      <Expression xsi:type="q1:CsvWriter">
+        <q1:FileName>data\white_centroids.csv</q1:FileName>
+        <q1:Append>false</q1:Append>
+        <q1:Overwrite>false</q1:Overwrite>
+        <q1:Suffix>Timestamp</q1:Suffix>
+        <q1:IncludeHeader>true</q1:IncludeHeader>
+        <q1:Selector>Source.Item4.X,Source.Item4.Y,Source.Item1,Source.Item2,Source.Item3</q1:Selector>
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="Zip" />
       </Expression>
       <Expression xsi:type="MemberSelector">
+        <Selector>Source.Centroid</Selector>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.Centroid</Selector>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.Centroid</Selector>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
         <Selector>Source.Orientation</Selector>
       </Expression>
-      <Expression xsi:type="q2:CsvWriter">
-        <q2:FileName>data\white_centroids.csv</q2:FileName>
-        <q2:Append>false</q2:Append>
-        <q2:Overwrite>false</q2:Overwrite>
-        <q2:Suffix>Timestamp</q2:Suffix>
-        <q2:IncludeHeader>true</q2:IncludeHeader>
-        <q2:Selector>Source.Item4.X,Source.Item4.Y,Source.Item1,Source.Item2,Source.Item3</q2:Selector>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.MinorAxisLength</Selector>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.MajorAxisLength</Selector>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.Centroid</Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:LargestBinaryRegion" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:LargestBinaryRegion" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:LargestBinaryRegion" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:LargestBinaryRegion" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:BinaryRegionAnalysis" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:BinaryRegionAnalysis" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:BinaryRegionAnalysis" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:BinaryRegionAnalysis" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:FindContours">
+          <q2:Mode>External</q2:Mode>
+          <q2:Method>ChainApproxNone</q2:Method>
+          <q2:Offset>
+            <q2:X>0</q2:X>
+            <q2:Y>0</q2:Y>
+          </q2:Offset>
+          <q2:MinArea>100</q2:MinArea>
+          <q2:MaxArea xsi:nil="true" />
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:FindContours">
+          <q2:Mode>External</q2:Mode>
+          <q2:Method>ChainApproxNone</q2:Method>
+          <q2:Offset>
+            <q2:X>0</q2:X>
+            <q2:Y>0</q2:Y>
+          </q2:Offset>
+          <q2:MinArea>100</q2:MinArea>
+          <q2:MaxArea xsi:nil="true" />
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:FindContours">
+          <q2:Mode>External</q2:Mode>
+          <q2:Method>ChainApproxNone</q2:Method>
+          <q2:Offset>
+            <q2:X>0</q2:X>
+            <q2:Y>0</q2:Y>
+          </q2:Offset>
+          <q2:MinArea>100</q2:MinArea>
+          <q2:MaxArea xsi:nil="true" />
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:FindContours">
+          <q2:Mode>External</q2:Mode>
+          <q2:Method>ChainApproxNone</q2:Method>
+          <q2:Offset>
+            <q2:X>0</q2:X>
+            <q2:Y>0</q2:Y>
+          </q2:Offset>
+          <q2:MinArea>1500</q2:MinArea>
+          <q2:MaxArea>20000</q2:MaxArea>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:MorphologicalOperator">
+          <q2:Size>
+            <q2:Width>5</q2:Width>
+            <q2:Height>5</q2:Height>
+          </q2:Size>
+          <q2:Anchor>
+            <q2:X>1</q2:X>
+            <q2:Y>1</q2:Y>
+          </q2:Anchor>
+          <q2:Shape>Rectangle</q2:Shape>
+          <q2:Iterations>1</q2:Iterations>
+          <q2:Operation>Dilate</q2:Operation>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:MorphologicalOperator">
+          <q2:Size>
+            <q2:Width>10</q2:Width>
+            <q2:Height>10</q2:Height>
+          </q2:Size>
+          <q2:Anchor>
+            <q2:X>1</q2:X>
+            <q2:Y>1</q2:Y>
+          </q2:Anchor>
+          <q2:Shape>Rectangle</q2:Shape>
+          <q2:Iterations>1</q2:Iterations>
+          <q2:Operation>Dilate</q2:Operation>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:MorphologicalOperator">
+          <q2:Size>
+            <q2:Width>5</q2:Width>
+            <q2:Height>5</q2:Height>
+          </q2:Size>
+          <q2:Anchor>
+            <q2:X>1</q2:X>
+            <q2:Y>1</q2:Y>
+          </q2:Anchor>
+          <q2:Shape>Rectangle</q2:Shape>
+          <q2:Iterations>1</q2:Iterations>
+          <q2:Operation>Dilate</q2:Operation>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:MorphologicalOperator">
+          <q2:Size>
+            <q2:Width>3</q2:Width>
+            <q2:Height>3</q2:Height>
+          </q2:Size>
+          <q2:Anchor>
+            <q2:X>1</q2:X>
+            <q2:Y>1</q2:Y>
+          </q2:Anchor>
+          <q2:Shape>Rectangle</q2:Shape>
+          <q2:Iterations>1</q2:Iterations>
+          <q2:Operation>Erode</q2:Operation>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:MorphologicalOperator">
+          <q2:Size>
+            <q2:Width>3</q2:Width>
+            <q2:Height>3</q2:Height>
+          </q2:Size>
+          <q2:Anchor>
+            <q2:X>1</q2:X>
+            <q2:Y>1</q2:Y>
+          </q2:Anchor>
+          <q2:Shape>Rectangle</q2:Shape>
+          <q2:Iterations>1</q2:Iterations>
+          <q2:Operation>Erode</q2:Operation>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:MorphologicalOperator">
+          <q2:Size>
+            <q2:Width>2</q2:Width>
+            <q2:Height>2</q2:Height>
+          </q2:Size>
+          <q2:Anchor>
+            <q2:X>1</q2:X>
+            <q2:Y>1</q2:Y>
+          </q2:Anchor>
+          <q2:Shape>Rectangle</q2:Shape>
+          <q2:Iterations>1</q2:Iterations>
+          <q2:Operation>Erode</q2:Operation>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:MorphologicalOperator">
+          <q2:Size>
+            <q2:Width>4</q2:Width>
+            <q2:Height>4</q2:Height>
+          </q2:Size>
+          <q2:Anchor>
+            <q2:X>1</q2:X>
+            <q2:Y>1</q2:Y>
+          </q2:Anchor>
+          <q2:Shape>Rectangle</q2:Shape>
+          <q2:Iterations>1</q2:Iterations>
+          <q2:Operation>Erode</q2:Operation>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:HsvThreshold">
+          <q2:Lower>
+            <q2:Val0>160</q2:Val0>
+            <q2:Val1>213</q2:Val1>
+            <q2:Val2>150</q2:Val2>
+            <q2:Val3>0</q2:Val3>
+          </q2:Lower>
+          <q2:Upper>
+            <q2:Val0>255</q2:Val0>
+            <q2:Val1>255</q2:Val1>
+            <q2:Val2>255</q2:Val2>
+            <q2:Val3>255</q2:Val3>
+          </q2:Upper>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:HsvThreshold">
+          <q2:Lower>
+            <q2:Val0>0</q2:Val0>
+            <q2:Val1>0</q2:Val1>
+            <q2:Val2>122</q2:Val2>
+            <q2:Val3>0</q2:Val3>
+          </q2:Lower>
+          <q2:Upper>
+            <q2:Val0>172</q2:Val0>
+            <q2:Val1>93</q2:Val1>
+            <q2:Val2>179</q2:Val2>
+            <q2:Val3>255</q2:Val3>
+          </q2:Upper>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:HsvThreshold">
+          <q2:Lower>
+            <q2:Val0>84</q2:Val0>
+            <q2:Val1>74</q2:Val1>
+            <q2:Val2>0</q2:Val2>
+            <q2:Val3>0</q2:Val3>
+          </q2:Lower>
+          <q2:Upper>
+            <q2:Val0>107</q2:Val0>
+            <q2:Val1>101</q2:Val1>
+            <q2:Val2>80</q2:Val2>
+            <q2:Val3>255</q2:Val3>
+          </q2:Upper>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:HsvThreshold">
+          <q2:Lower>
+            <q2:Val0>126</q2:Val0>
+            <q2:Val1>0</q2:Val1>
+            <q2:Val2>65</q2:Val2>
+            <q2:Val3>0</q2:Val3>
+          </q2:Lower>
+          <q2:Upper>
+            <q2:Val0>179</q2:Val0>
+            <q2:Val1>126</q2:Val1>
+            <q2:Val2>89</q2:Val2>
+            <q2:Val3>255</q2:Val3>
+          </q2:Upper>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q2:FileCapture">
+          <q2:FileName>C:\Users\Matias\Desktop\MLA2_Tracking\src\video\Raw_video2018-03-08T11_35_40.avi</q2:FileName>
+          <q2:PlaybackRate>0</q2:PlaybackRate>
+          <q2:StartPosition>0</q2:StartPosition>
+          <q2:PositionUnits>Frames</q2:PositionUnits>
+          <q2:Loop>false</q2:Loop>
+          <q2:Playing>false</q2:Playing>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="q1:CsvWriter">
+        <q1:FileName>data\green_centroids.csv</q1:FileName>
+        <q1:Append>false</q1:Append>
+        <q1:Overwrite>false</q1:Overwrite>
+        <q1:Suffix>Timestamp</q1:Suffix>
+        <q1:IncludeHeader>true</q1:IncludeHeader>
+        <q1:Selector>Source.X,Source.Y</q1:Selector>
+      </Expression>
+      <Expression xsi:type="q1:CsvWriter">
+        <q1:FileName>data\blue_centroids.csv</q1:FileName>
+        <q1:Append>false</q1:Append>
+        <q1:Overwrite>false</q1:Overwrite>
+        <q1:Suffix>Timestamp</q1:Suffix>
+        <q1:IncludeHeader>true</q1:IncludeHeader>
+        <q1:Selector>Source.X,Source.Y</q1:Selector>
       </Expression>
     </Nodes>
     <Edges>
       <Edge>
-        <From>0</From>
+        <From>2</From>
         <To>1</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
-        <From>1</From>
-        <To>3</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
-        <From>2</From>
+        <From>3</From>
         <To>0</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
-        <From>2</From>
-        <To>11</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
-        <From>3</From>
-        <To>5</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
         <From>4</From>
-        <To>12</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
-        <From>4</From>
-        <To>13</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
-        <From>4</From>
-        <To>14</To>
-        <Label>Source1</Label>
-      </Edge>
-      <Edge>
-        <From>4</From>
-        <To>17</To>
+        <To>34</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>5</From>
-        <To>4</To>
+        <To>35</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>6</From>
-        <To>7</To>
+        <To>2</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>7</From>
-        <To>8</To>
-        <Label>Source1</Label>
+        <To>2</To>
+        <Label>Source2</Label>
       </Edge>
       <Edge>
         <From>8</From>
-        <To>9</To>
-        <Label>Source1</Label>
+        <To>2</To>
+        <Label>Source3</Label>
       </Edge>
       <Edge>
         <From>9</From>
-        <To>10</To>
-        <Label>Source1</Label>
+        <To>2</To>
+        <Label>Source4</Label>
       </Edge>
       <Edge>
         <From>10</From>
-        <To>15</To>
+        <To>3</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>11</From>
-        <To>6</To>
+        <To>4</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>12</From>
-        <To>16</To>
-        <Label>Source4</Label>
+        <To>5</To>
+        <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>13</From>
-        <To>16</To>
-        <Label>Source3</Label>
+        <To>9</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>13</From>
+        <To>8</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>13</From>
+        <To>7</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>13</From>
+        <To>6</To>
+        <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>14</From>
-        <To>16</To>
-        <Label>Source2</Label>
+        <To>10</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>15</From>
+        <To>11</To>
+        <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>16</From>
-        <To>18</To>
+        <To>12</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
         <From>17</From>
+        <To>13</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>18</From>
+        <To>14</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>19</From>
+        <To>15</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>20</From>
         <To>16</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>21</From>
+        <To>17</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>22</From>
+        <To>18</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>23</From>
+        <To>19</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>24</From>
+        <To>20</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>25</From>
+        <To>21</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>26</From>
+        <To>22</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>27</From>
+        <To>23</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>28</From>
+        <To>24</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>29</From>
+        <To>25</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>30</From>
+        <To>26</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>31</From>
+        <To>27</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>32</From>
+        <To>28</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>33</From>
+        <To>29</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>33</From>
+        <To>30</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>33</From>
+        <To>31</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>33</From>
+        <To>32</To>
         <Label>Source1</Label>
       </Edge>
     </Edges>
   </Workflow>
   <ExtensionTypes>
-    <Type>Bonsai.Vision.HsvThreshold, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.MorphologicalOperator, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.FileCapture, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.FindContours, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.LargestBinaryRegion, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.BinaryRegionAnalysis, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
     <Type>Bonsai.IO.CsvWriter, Bonsai.System, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
     <Type>Bonsai.Reactive.Zip, Bonsai.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Vision.LargestBinaryRegion, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Vision.BinaryRegionAnalysis, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Vision.FindContours, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Vision.MorphologicalOperator, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Vision.HsvThreshold, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Vision.FileCapture, Bonsai.Vision, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
   </ExtensionTypes>
 </WorkflowBuilder>

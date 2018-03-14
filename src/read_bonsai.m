@@ -1,23 +1,31 @@
 %% This function reads .csv data from Bonsai
 
-function raw_data = read_bonsai()
+function [raw_data, fullFileName] = read_bonsai(varargin)
+
+% varargin is the path of the file if we want to skip the interactive 
+
+if isempty(varargin)
 
 [baseName, folder] = uigetfile({'*.csv'}, 'Select a csv file with positions');
 fullFileName = fullfile(folder, baseName);
 
-% Check if the video file actually exists in the current folder or on the search path.
-if ~exist(fullFileName, 'file')
-    % File doesn't exist -- didn't find it there.  Check the search path for it.
-    % fullFileNameOnSearchPath = baseFileName; % No path this time.
-    % if ~exist(fullFileNameOnSearchPath, 'file')
-    % Still didn't find it.  Alert user.
-    errorMessage = sprintf('Error: %s does not exist in the search path folders.', fullFileName);
-    uiwait(warndlg(errorMessage));
-    return;
-    % end
+    % Check if the video file actually exists in the current folder or on the search path.
+    if ~exist(fullFileName, 'file')
+        % File doesn't exist -- didn't find it there.  Check the search path for it.
+        % fullFileNameOnSearchPath = baseFileName; % No path this time.
+        % if ~exist(fullFileNameOnSearchPath, 'file')
+        % Still didn't find it.  Alert user.
+        errorMessage = sprintf('Error: %s does not exist in the search path folders.', fullFileName);
+        uiwait(warndlg(errorMessage));
+        return;
+        % end
+
+    end
+
+else   
+  fullFileName = varargin{:}; 
     
 end
-
 
 %% Format for each line of text:
 delimiter = ' '; % space delimited

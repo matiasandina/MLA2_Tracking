@@ -15,7 +15,7 @@
         <Combinator xsi:type="Timestamp" />
       </Expression>
       <Expression xsi:type="q2:CsvWriter">
-        <q2:FileName>timestamp.csv</q2:FileName>
+        <q2:FileName>video\timestamp.csv</q2:FileName>
         <q2:Append>false</q2:Append>
         <q2:Overwrite>false</q2:Overwrite>
         <q2:Suffix>Timestamp</q2:Suffix>
@@ -24,7 +24,7 @@
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:VideoWriter">
-          <q1:FileName>Raw_video.avi</q1:FileName>
+          <q1:FileName>video\Raw_video.avi</q1:FileName>
           <q1:Suffix>Timestamp</q1:Suffix>
           <q1:Buffered>true</q1:Buffered>
           <q1:Overwrite>false</q1:Overwrite>

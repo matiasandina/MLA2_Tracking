@@ -2,13 +2,19 @@
 % The output is called raw_data but it's actually a fixed version of it
 % We call it the same to avoid duplication of the matrix
 
-function [raw_data, row] = fix_manual(raw_data)
+function [raw_data, row] = fix_manual(raw_data, startFrame, manual_interpolation)
 
+
+Variables = {'videoObject'};
+allVariables = whos;
+
+Video_loaded = ismember(Variables,{allVariables.name});
 
 % Initialize video
-if (~exist('videoObject'))
-[videoObject, numberOfFrames] = initialize_video;
+if (Video_loaded == 0)
+    [videoObject, numberOfFrames] = initialize_video;
 end
+
 
 % Raw data expected to be position table
 % We need a raw_data.X and raw_data.Y
@@ -16,15 +22,25 @@ end
 % This will give you the indices 
 [row, ~] = find(isnan(raw_data.X));
 
-% We want to read every 15 frames until we have enough for interpolation
-
+switch manual_interpolation
+    case 'coarse'
+        my_frame_jump = 30;
+    case 'fine'
+        my_frame_jump = 15;
+    otherwise
+        error('Expecting "coarse" or "fine" for my_frame_jump')
+end
+        
 figure_1 = subplot(1,1,1);
-
-    for ii=1:15:length(row)
+        
+    for ii=1:my_frame_jump:length(row)
   
-          sprintf('Reading frame %d', ii)  
+          sprintf('Reading frame %d', ii + startFrame)  
 
-          frame_to_read = row(ii);
+          % startFrame = 0 if video not cut
+          % startframe = 371 if test start was selected at frame 371
+          
+          frame_to_read = row(ii) + startFrame;
 
           % Read the frame and display
           thisFrame = read(videoObject, frame_to_read);
@@ -48,9 +64,10 @@ figure_1 = subplot(1,1,1);
           end
 
          % modify original data  
+         % startFrame has to be subtracted here
          
-         raw_data.X(frame_to_read) = x;
-         raw_data.Y(frame_to_read) = y;
+         raw_data.X(frame_to_read - startFrame) = x;
+         raw_data.Y(frame_to_read - startFrame) = y;
 
     end
     

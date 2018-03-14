@@ -25,12 +25,12 @@ pair_xy_dist <- function(dataframe1, dataframe2){
 
  val <- sapply(1:nrow(dataframe1),
                FUN = function(q) euc.dist(dataframe1[q,], dataframe2[q,]))
+
+ # total distance not needed, can be easily recalculated elsewhere  
+ # total_dist <- sum(val)
+ # li <- list(total_dist=total_dist, val=val)
   
-  total_dist <- sum(val)
-  
-  li <- list(total_dist=total_dist, val=val)
-  
-  return(li)    
+  return(val)    
   
 }
 

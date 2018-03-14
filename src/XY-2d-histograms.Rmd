@@ -22,6 +22,7 @@ rat_pos <- read.csv('rloess_smooth.csv')
 * http://stat405.had.co.nz/ggmap.pdf
 * https://stackoverflow.com/questions/24078774/overlay-two-ggplot2-stat-density2d-plots-with-alpha-channels?lq=1
 * https://www.r-bloggers.com/5-ways-to-do-2d-histograms-in-r/
+* https://stackoverflow.com/questions/24845652/specifying-the-scale-for-the-density-in-ggplot2s-stat-density2d
  
 ```{r setup-bins}
 # Get color palette 
@@ -41,7 +42,7 @@ ybins <- 480/bin_size
 ```{r ggplot2-option-1}
 ggplot(rat_pos, aes(X,Y)) +
   stat_density2d(geom = 'tile', aes(fill = ..density..), contour = FALSE,
-                 n = c(xbins, ybins), ) +
+                 n = c(xbins, ybins)) +
   #geom_point() + 
   #geom_path(alpha=0.1) +
   coord_equal() +
@@ -76,7 +77,11 @@ ggplot(bins_to_plot, aes(Var1, Var2, fill = value)) +
 r <- raster(xmn=0, ymn=0, xmx=640, ymx=480, res=20)
 x <- rasterize(rat_pos[,1:2], r, fun='count')
 plot(x, xlim=c(0,640), ylim=c(0,480), xaxt='n', ann=FALSE, yaxt='n')
+```
 
+# Using gplots package
+
+```{r gplots-package}
 # create plot
 hist2d(rat_pos[,1:2], same.scale=TRUE,
        nbins=c(xbins, ybins),
