@@ -1,12 +1,20 @@
 # Options for plotting
+# This is for one dataframe/debug mode
+# This script is integrated into lists/helper functions within distance_analysis.R
 
 library(stringr)
 library(ggplot2)
 library(ggExtra)
+library(dplyr)
 
 mydata <- read_rat_smooth('SD74O2Q2')
 mydata <- read_rat_smooth('SD76N3Q1')
 mydata <- read_rat_smooth('SD85S1N1')
+mydata <- read_rat_smooth('SD99O1')
+mydata <- read_rat_smooth('SD74O2Q3')
+mydata <- read_rat_smooth('SD112')
+mydata <- read_rat_smooth('SDWK23')
+mydata <- read_rat_smooth('SD110')
 
 data_to_dist <- lapply(mydata, function(t) t[,1:2])
 
@@ -35,8 +43,8 @@ ggMarginal(pp,
            colour = 'black',
            fill = '#E69F00')
 
-g <- ggplotGrob(ggplot(mydata$SD74O2Q2, aes(X))) + geom_density()
-pp + annotation_custom(grob = g, xmin = 0, xmax = 640, ymin = 30, ymax = 50)
+
+## Bind data
 
 df <- dplyr::bind_rows(mydata, .id="id")
 

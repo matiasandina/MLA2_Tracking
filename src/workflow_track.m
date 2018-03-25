@@ -6,7 +6,7 @@ format long g
 
 %% Read rat data
 
-uiwait(msgbox('Select Rat position raw_file (white_centroids.csv)'))
+uiwait(msgbox('Select Rat position raw_file (./data/RatID/white_centroids.csv)'))
 
 [rat_raw_data, fullFileName]= read_bonsai();
 
@@ -66,7 +66,7 @@ to_fix_diff{4} = blue_pup;
 
 %% Filter out data if differences too big
 
-diff_filtered = cellfun(@fix_diff, to_fix_diff, 'UniformOutput', false);
+diff_filtered = cellfun(@(Q) fix_diff(Q, 20, 20), to_fix_diff, 'UniformOutput', false);
 
 % diff_filtered = fix_diff(rat_raw_data);
 % red_pup = fix_diff(rat_pup);

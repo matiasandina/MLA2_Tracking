@@ -2,6 +2,8 @@
 
 function display_track(centroids, startFrame, stopFrame, row_lag)
 
+centroids = table2array(centroids);
+
 Variables = {'videoObject'};
 allVariables = whos;
 
