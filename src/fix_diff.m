@@ -26,16 +26,8 @@ idx_diff_Y = find(abs(diff_Y > single_threshold));
 
 combined_diff = find(abs(diff_X) + abs(diff_Y) > combined_threshold);
 
-% Look for high variance points
-
-var_x = movvar(raw_data.X, 60, 'omitnan');
-var_y = movvar(raw_data.Y, 60, 'omitnan');
-
-var_to_remove_x = find(var_x > 5000);
-var_to_remove_y = find(var_y > 5000);
-
 % Make them unique
-rows_to_nan = unique([idx_diff_X; idx_diff_Y; combined_diff; var_to_remove_x; var_to_remove_y]);
+rows_to_nan = unique([idx_diff_X; idx_diff_Y; combined_diff]);
 
 raw_data.X(rows_to_nan) = NaN;
 raw_data.Y(rows_to_nan) = NaN;

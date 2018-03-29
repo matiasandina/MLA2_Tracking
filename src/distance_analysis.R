@@ -15,6 +15,7 @@ library(stringr)
 # Sourcing functions
 if(!exists("read_rat_smooth", mode="function")) source("read_rat_smooth.R")
 if(!exists("pair_xy_dist", mode="function")) source("pair_xy_dist.R")
+if(!exists("MajorAxis_median", mode="function")) source("MajorAxis_median.R")
 
 # Get animals that have been ran
 ran_animals <- read.csv('MLA_Animal_Video_Key.csv', stringsAsFactors = T)
@@ -71,8 +72,29 @@ distance_df <- bind_rows(distance_list, .id='RatID') %>%
                mutate(total_dist = sum(blue_pup, green_pup, red_pup),
                       mean_dist = mean(blue_pup, green_pup, red_pup))
 
+# Add the median major axis for each rat
+
+mma <- MajorAxis_median(xy_pos)
+
+# join mma with distance_df and calculate binary distnace ("close", "away")
+# based on median/2
+
+distance_df <- left_join(distance_df, mma) %>%
+               mutate(blue_close = ifelse(blue_pup < medianMajorAxis/2, "close", "away"),
+                      green_close = ifelse(green_pup < medianMajorAxis/2, "close", "away"),
+                      red_close = ifelse(red_pup < medianMajorAxis/2, "close", 'away'))
+
+# Binary position summary
+
+binary_pos_summary <- distance_df %>%
+                      group_by(RatID) %>%
+                      summarise_at(.vars = c("blue_close", "green_close", "red_close"),
+                                   .funs = function(x) sum(x=="close")/length(x)) %>%
+                      mutate(mean_close = rowMeans(data.frame(blue_close, green_close, red_close)))
+
 
 # Calculate distance between pups (pup to pup distance)
+# We take the blue pup as reference
 
 between_pup_dist <- function(mydata){
   
@@ -99,7 +121,7 @@ for(i in 1:length(between_pup)){
 
 # Plot distance vs frame 
 
-between_pup %>% bind_rows(, .id="RatID") %>%
+between_pup %>% bind_rows(.id="RatID") %>%
   group_by(RatID, frameID) %>% mutate(between_pup_dist = green_pup + red_pup) %>%
   select(RatID, frameID, between_pup_dist) %>%
   left_join(distance_df) %>%
@@ -138,14 +160,3 @@ total_dist <- XY_df %>%
                         mean_Step = mean(Step))
 
 custom_2d_hist(xy_pos, TRUE)
-
-
-
-SD99O1 <- filter(XY_df, animal=="SD99O1") %>%
-          ungroup %>%
-          select(RatID, X,Y, frameID) %>%
-          mutate( deltaLag1 = X - lag(X, 1),
-                  deltaLag2 = X - lag(X, 2)
-          )
-
-

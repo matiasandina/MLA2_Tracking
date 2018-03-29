@@ -10,6 +10,6 @@ function pup_smooth = smooth_pups(data_to_smooth)
 % Retrieving looks a lot like noise but with pup/mom movement being
 % highly correlated
 
-pup_smooth = smoothdata(data_to_smooth, 'movmedian', 60);
+pup_smooth = smoothdata(data_to_smooth, 'movmedian', 30);
 
 end

@@ -7,6 +7,8 @@ library(ggplot2)
 library(ggExtra)
 library(dplyr)
 
+# Read individual rats for troubleshooting and debug
+
 mydata <- read_rat_smooth('SD74O2Q2')
 mydata <- read_rat_smooth('SD76N3Q1')
 mydata <- read_rat_smooth('SD85S1N1')
@@ -15,6 +17,26 @@ mydata <- read_rat_smooth('SD74O2Q3')
 mydata <- read_rat_smooth('SD112')
 mydata <- read_rat_smooth('SDWK23')
 mydata <- read_rat_smooth('SD110')
+
+## Bind data
+
+df <- dplyr::bind_rows(mydata, .id="id")
+
+ggplot(df, aes(X, Y)) +
+  #stat_density2d(geom = 'tile', aes(fill = ..density..), contour = FALSE,
+  #               n = c(xbins, ybins)) +
+  geom_point(aes(color=id), alpha=0.4) + 
+  geom_path(alpha=0.1) +
+  scale_y_reverse() +
+  coord_equal() +
+  theme_minimal() +
+  scale_color_manual(values =  c("gray50", "#1334C1","#84F619", "#F43900")) + # Order is Rat, blue, green, red
+  geom_vline(xintercept = c(0,640))+
+  geom_hline(yintercept = c(0,480)) + facet_wrap(~id)
+#  theme_void()
+
+
+
 
 data_to_dist <- lapply(mydata, function(t) t[,1:2])
 
@@ -43,23 +65,6 @@ ggMarginal(pp,
            colour = 'black',
            fill = '#E69F00')
 
-
-## Bind data
-
-df <- dplyr::bind_rows(mydata, .id="id")
-
-ggplot(df, aes(X, Y)) +
-  #stat_density2d(geom = 'tile', aes(fill = ..density..), contour = FALSE,
-  #               n = c(xbins, ybins)) +
-  geom_point(aes(color=id), alpha=0.4) + 
-  geom_path(alpha=0.1) +
-  scale_y_reverse() +
-  coord_equal() +
-  theme_minimal() +
-  scale_color_manual(values =  c("gray50", "#1334C1","#84F619", "#F43900")) + # Order is Rat, blue, green, red
-  geom_vline(xintercept = c(0,640))+
-  geom_hline(yintercept = c(0,480)) + facet_wrap(~id)
-#  theme_void()
 
 
 refCol <- colorRampPalette(rev(brewer.pal(6,'Spectral')))

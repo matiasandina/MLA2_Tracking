@@ -1,6 +1,7 @@
 %% Workflow for tracking
 
 clear all
+hold off
 
 format long g
 
@@ -73,6 +74,10 @@ diff_filtered = cellfun(@(Q) fix_diff(Q, 20, 20), to_fix_diff, 'UniformOutput', 
 % green_pup = fix_diff(green_pup);
 % blue_pup = fix_diff(blue_pup);
 
+% identify high variance places and remove points
+
+% diff_filtered = cellfun(@(Q) high_variance(Q, startFrame), diff_filtered, 'UniformOutput', false);
+
 
 %% Fix manual NA values
 % The fixed data will have manual input
@@ -87,6 +92,7 @@ fixed_data{1} = fix_manual(diff_filtered{1}, startFrame, 'fine');
 uiwait(msgbox('Begin Manual Fix for pup position. Pup order red, green, blue'))
 
 fixed_data(2:4) = cellfun(@(Q) fix_manual(Q, startFrame, 'coarse'), diff_filtered(2:4), 'UniformOutput', false);
+
 
 % Save manual fix
 

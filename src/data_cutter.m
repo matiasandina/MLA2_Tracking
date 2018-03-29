@@ -9,13 +9,16 @@
 function [cut_data, startFrame, endFrame, video_path, videoObject] = data_cutter(raw_data)
 
 Variables = {'videoObject'};
-allVariables = whos;
+allVariables =  evalin('base', 'whos');
 
 Video_loaded = ismember(Variables,{allVariables.name});
 
 % Initialize video
 if (Video_loaded == 0)
     [videoObject, numberOfFrames] = initialize_video;
+else
+    videoObject = evalin('base','videoObject');
+    numberOfFrames = videoObject.NumberOfFrame;
 end
 
 % Get video data
@@ -38,7 +41,7 @@ ii = 1;
 
 while ii < numberOfFrames
     
-    sprintf('Reading frame %d of %d. Desired frame gap is %d', ii, numberOfFrames, desired_frames)
+    sprintf('Reading frame %d of %d. Desired frame gap is %d, around %d ', ii, numberOfFrames, desired_frames, startFrame + desired_frames)
     
     % Read the frame and display
     thisFrame = read(videoObject, ii);
@@ -46,7 +49,7 @@ while ii < numberOfFrames
     if (ii==1)
         
         hImage = imshow(thisFrame, 'Parent' ,figure_1);
-        
+      
         % get user input for that frame
         % we don't care about the mouse click keyboard matters
         [~,~ , ~] = ginput(1);
@@ -61,7 +64,6 @@ while ii < numberOfFrames
         % get user input for that frame
         % we don't care about the mouse click keyboard matters
         [~, ~, button] = ginput(1);
-        
         
         % 32 is spacebar ; empty is Enter >> jump to "end"
         % anything else will advance the frame
@@ -106,6 +108,7 @@ while ii < numberOfFrames
             % go on searching
             
             ii = ii + 10;
+                        
             
             % Otherwise it goes too fast and you can't see it
             pause(0.1)

@@ -4,17 +4,18 @@
 
 function [raw_data, row] = fix_manual(raw_data, startFrame, manual_interpolation)
 
-
 Variables = {'videoObject'};
-allVariables = whos;
+allVariables =  evalin('base', 'whos');
 
 Video_loaded = ismember(Variables,{allVariables.name});
 
 % Initialize video
 if (Video_loaded == 0)
     [videoObject, numberOfFrames] = initialize_video;
+else
+    videoObject = evalin('base','videoObject');
+    numberOfFrames = videoObject.NumberOfFrame;
 end
-
 
 % Raw data expected to be position table
 % We need a raw_data.X and raw_data.Y
