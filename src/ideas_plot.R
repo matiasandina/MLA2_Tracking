@@ -17,6 +17,7 @@ mydata <- read_rat_smooth('SD74O2Q3')
 mydata <- read_rat_smooth('SD112')
 mydata <- read_rat_smooth('SDWK23')
 mydata <- read_rat_smooth('SD110')
+mydata <- read_rat_smooth('SD111')
 
 ## Bind data
 

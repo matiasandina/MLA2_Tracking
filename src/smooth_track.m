@@ -42,4 +42,10 @@ function fixed_data = smooth_track(fixed_data)
     fixed_data.X(nanData(:,1)) = rloess_smoothing(nanData(:,1),1);
     fixed_data.Y(nanData(:,2)) = rloess_smoothing(nanData(:,2),2);
     
+    % We add a smoothing portion with movmedian
+    % This reduces unnecessary noise (also makes the path fit the animal real position less)
+    
+    fixed_data.X = smoothdata(fixed_data.X, 'movmedian', 15);
+    fixed_data.Y = smoothdata(fixed_data.Y, 'movmedian', 15);
+    
 end
