@@ -90,7 +90,61 @@ binary_pos_summary <- distance_df %>%
                       group_by(RatID) %>%
                       summarise_at(.vars = c("blue_close", "green_close", "red_close"),
                                    .funs = function(x) sum(x=="close")/length(x)) %>%
-                      mutate(mean_close = rowMeans(data.frame(blue_close, green_close, red_close)))
+                      mutate(mean_close = rowMeans(data.frame(blue_close, green_close, red_close))) %>%
+                      left_join(ran_animals)
+
+# Calculate full XY position into a df 
+# we don't need to plot it (custom_2d_hist is meant to plot)
+
+XY_df <- custom_2d_hist(xy_pos)
+
+XY_df <- XY_df %>%  group_by(animal) %>%
+  mutate(diff_x = c(0, diff(X)),
+         diff_y=c(0, diff(Y)),
+         Step= sqrt(diff_x^2 + diff_y^2),
+         total_track=cumsum(Step))
+
+ggplot(XY_df, aes(frameID, total_track, color=animal)) +
+  geom_point() +
+  facet_wrap(~RatID) +
+  theme(legend.position = 'none')
+
+# Select only mothers
+
+total_dist <- XY_df %>%
+  filter(RatID==animal) %>%
+  group_by(RatID) %>%
+  select(RatID, animal, total_track, Step, total_track) %>%
+  summarise(integrated_path = sum(total_track), 
+            mean_Step = mean(Step))
+
+# If in need to plot traces for each animal
+# custom_2d_hist(xy_pos, TRUE)
+
+
+
+# Calculate the time pups are in the same quadrant ####
+
+# This is a list, first element has quadrant vs frameID
+# Second element has whether together/separate vs frameID
+
+same_quadrant <- count_quadrant(XY_df)
+
+# Take the second element and do further summary
+quadrant_df <- same_quadrant[[2]] %>%
+                group_by(RatID) %>%
+                mutate(n_frames = length(together),
+                       are_separated = together=="separated") %>%
+                summarise(together_percent = 1 - (sum(are_separated)/unique(n_frames))) %>%
+                left_join(ran_animals)
+
+# parametric test gives difference, non-parametric is almost significant
+t.test(together_percent ~ Group, data=lala)
+wilcox.test(together_percent ~ Group, data=lala)
+
+# This is significant but by very little
+car::leveneTest(quadrant_df$together_percent, quadrant_df$Group)
+
 
 
 # Calculate distance between pups (pup to pup distance)
@@ -134,29 +188,3 @@ ggplot(distance_df, aes(frameID, mean_dist))+
   geom_line() + facet_wrap(~RatID)
 
 
-# Calculate full XY position into a df 
-# we don't need to plot it (custom_2d_hist is meant to plot)
-
-XY_df <- custom_2d_hist(xy_pos)
-
-XY_df <- XY_df %>%  group_by(animal) %>%
-                    mutate(diff_x = c(0, diff(X)),
-                           diff_y=c(0, diff(Y)),
-                           Step= sqrt(diff_x^2 + diff_y^2),
-                           total_track=cumsum(Step))
-
-ggplot(XY_df, aes(frameID, total_track, color=animal)) +
-  geom_point() +
-  facet_wrap(~RatID) +
-  theme(legend.position = 'none')
-
-# Select only mothers
-
-total_dist <- XY_df %>%
-              filter(RatID==animal) %>%
-              group_by(RatID) %>%
-              select(RatID, animal, total_track, Step, total_track) %>%
-              summarise(integrated_path = sum(total_track), 
-                        mean_Step = mean(Step))
-
-custom_2d_hist(xy_pos, TRUE)

@@ -138,7 +138,7 @@ handles.radio(5) = uicontrol('Style', 'radiobutton', ...
     
    % Save handles 
    guidata(handles.hFigure, handles); 
-
+   display('updating GUI data')
     
 %% Helper functions and button callbacks    
     
@@ -193,17 +193,21 @@ handles.radio(5) = uicontrol('Style', 'radiobutton', ...
             myframe = ceil(handles.vlc.input.Time/1000 * handles.frameRate) - 1;
             
             handles.final_data.behavior(myframe) = behavior;
-                        
-            display(handles.final_data(myframe, :))
 
+            display(handles.final_data(myframe, :))
+            
             guidata(handles.hFigure, handles)
-        end
+            display('updating GUI data')
+            
+            
+       end
 
  %% Not annotate, basic placeholder to not annotate   
     
     function NotAnnotate(varargin)    
         hFigure = findobj('tag', 'VideoPlay');
         handles = guidata(hFigure);
+        
         % change value of the orther button to 0
         set(handles.hAnnotateButton, 'Value', 0);
     end
@@ -245,10 +249,12 @@ handles.radio(5) = uicontrol('Style', 'radiobutton', ...
         handles.Behavior = RadioH.String;
         sprintf('Switching to...%s', handles.Behavior)
         guidata(handles.hFigure, handles)
+        
+        display('updating GUI data')
     end 
         
 
 % End of global function
- 
+
 
     end
