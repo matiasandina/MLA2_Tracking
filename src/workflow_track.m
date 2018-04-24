@@ -46,7 +46,7 @@ green_pup = green_pup(startFrame:endFrame, :);
 blue_pup = blue_pup(startFrame:endFrame, :);
 
 metadata = cell2table({video_path, startFrame, endFrame, fullFileName},...
-    'VariableNames',{'vide_path' 'starFrame' 'endFrame' 'rat_centroid'});
+    'VariableNames',{'video_path' 'startFrame' 'endFrame' 'rat_centroid'});
 
 % Generate names for saving
 cut_data_name = strcat(RatID, 'frame_adjusted', timestamp,'.csv');

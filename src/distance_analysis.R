@@ -84,7 +84,7 @@ distance_df <- left_join(distance_df, mma) %>%
                       green_close = ifelse(green_pup < medianMajorAxis/2, "close", "away"),
                       red_close = ifelse(red_pup < medianMajorAxis/2, "close", 'away'))
 
-# Binary position summary
+# Close-Far: Binary position summary ####
 
 binary_pos_summary <- distance_df %>%
                       group_by(RatID) %>%
@@ -92,6 +92,15 @@ binary_pos_summary <- distance_df %>%
                                    .funs = function(x) sum(x=="close")/length(x)) %>%
                       mutate(mean_close = rowMeans(data.frame(blue_close, green_close, red_close))) %>%
                       left_join(ran_animals)
+
+# t-tests
+t.test(mean_close ~ Group, data=binary_pos_summary)
+wilcox.test(mean_close ~ Group, data=binary_pos_summary)
+
+# Levene-test
+car::leveneTest(binary_pos_summary$mean_close, binary_pos_summary$Group)
+
+
 
 # Calculate full XY position into a df 
 # we don't need to plot it (custom_2d_hist is meant to plot)
@@ -121,9 +130,7 @@ total_dist <- XY_df %>%
 # If in need to plot traces for each animal
 # custom_2d_hist(xy_pos, TRUE)
 
-
-
-# Calculate the time pups are in the same quadrant ####
+# Calculate if the time pups are in the same quadrant ####
 
 # This is a list, first element has quadrant vs frameID
 # Second element has whether together/separate vs frameID
@@ -139,8 +146,8 @@ quadrant_df <- same_quadrant[[2]] %>%
                 left_join(ran_animals)
 
 # parametric test gives difference, non-parametric is almost significant
-t.test(together_percent ~ Group, data=lala)
-wilcox.test(together_percent ~ Group, data=lala)
+t.test(together_percent ~ Group, data=quadrant_df)
+wilcox.test(together_percent ~ Group, data=quadrant_df)
 
 # This is significant but by very little
 car::leveneTest(quadrant_df$together_percent, quadrant_df$Group)
@@ -187,4 +194,21 @@ between_pup %>% bind_rows(.id="RatID") %>%
 ggplot(distance_df, aes(frameID, mean_dist))+
   geom_line() + facet_wrap(~RatID)
 
+## Difference in pup distance from first to last frame
+
+first_to_last <- between_pup %>% bind_rows(.id="RatID") %>%
+  group_by(RatID, frameID) %>% mutate(between_pup_dist = green_pup + red_pup) %>%
+  filter(frameID %in% c(1, 9001)) %>%
+  ungroup() %>% group_by(RatID) %>%
+  summarise(diff_dist = diff(between_pup_dist)) %>%
+  left_join(ran_animals)
+
+
+ggplot(first_to_last, aes(Group, diff_dist)) + geom_boxplot() + geom_point()
+
+t.test(diff_dist~Group, data=first_to_last)
+
+# SD112 was particularly not responsive to pups (even when tested twice)
+# p value makes more sense here
+t.test(diff_dist~Group, data=filter(first_to_last, RatID!="SD112"))
 
