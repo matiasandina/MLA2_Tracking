@@ -4,6 +4,8 @@
 .Rhistory
 .RData
 .Ruserdata
+.svg
+.mat
 
 # Ignore Data
 
@@ -12,3 +14,4 @@ src/raw_data/
 src/video/
 Annotator/*.svg
 Annotator/*.mat
+Annotator/data
