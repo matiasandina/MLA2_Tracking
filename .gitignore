@@ -1,8 +1,10 @@
+# Extensions to ignore
+
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-
+.svg
 
 # Ignore Data
 

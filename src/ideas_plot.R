@@ -21,6 +21,11 @@ mydata <- read_rat_smooth('SD111')
 mydata <- read_rat_smooth('SD118')
 mydata <- read_rat_smooth('SD115')
 mydata <- read_rat_smooth('SD76N3Q4')
+mydata <- read_rat_smooth('SD113')
+mydata <- read_rat_smooth('SD116')
+mydata <- read_rat_smooth('SD117')
+mydata <- read_rat_smooth('SD119')
+
 
 ## Bind data
 
