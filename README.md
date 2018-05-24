@@ -21,9 +21,11 @@ Here is where the code for tracking animal position in MLA2 Experiment Lives
 
 This repository contains a video annotator. It uses code in `Annotator` folder and a GUI to interphase MATLAB with VLC via ActiveX. 
 
+1. Run `AnnotateVideo.m`
 1. You are requested to select an animal/video from the data in `src/data` and `src/video` and begin with the manual annotation of behavior.  
 1. After annotation and closing the GUI you will be prompted to save the data.
 1. The annotator labels 1 every ~8 frames. Thus we have to fill the gaps using `fill_annotator_gaps.m`. This function is only suited for 1 video at a time. In order to make it work for all videos at the same time (quite better) we use `calculate_behavior.m`, which also gives us the latencies and durations.
+1. Behavior can be later analyzed in R with `behaviors_from_ethogram.R`
 
 Optional >> Making a Raster Plot (Ethogram).  
 **Watch out!** Plotting the data with `make_ethogram_plot.m` needs `gramm` to be added to path.
