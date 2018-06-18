@@ -67,6 +67,10 @@ my.file.copy <- function(from, to) {
 }
 
 
+# Copy all files
+# It is imperative that the order of the RatID column and the Raw_video column matches
+# To make sure this is the case, enter rats in the order they were ran into the key .csv file
+
 for (i in 1:length(files_to_copy)){
   
   copy_these <- files_to_match[files_to_copy[[i]]]
