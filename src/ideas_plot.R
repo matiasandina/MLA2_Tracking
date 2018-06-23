@@ -7,6 +7,8 @@ library(ggplot2)
 library(ggExtra)
 library(dplyr)
 
+if(!exists("read_rat_smooth", mode="function")) source("read_rat_smooth.R")
+
 # Read individual rats for troubleshooting and debug
 
 mydata <- read_rat_smooth('SD74O2Q2')
@@ -25,6 +27,11 @@ mydata <- read_rat_smooth('SD113')
 mydata <- read_rat_smooth('SD116')
 mydata <- read_rat_smooth('SD117')
 mydata <- read_rat_smooth('SD119')
+
+mydata <- read_rat_smooth('SD76N3Q2T1')
+
+mydata <- read_rat_smooth('SD111S1')
+
 
 
 ## Bind data

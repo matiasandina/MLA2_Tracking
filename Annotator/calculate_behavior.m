@@ -38,6 +38,32 @@ data_list{file_to_read} = filled_data;
 end
 
 
+%% Bind the big list and save
+
+% initiate df
+filled_behavior = data_list{1}.filled_data;
+
+filled_behavior.RatID = string(repelem(data_list{1}.RatID, ...
+                                  size(filled_behavior, 1), 1));
+
+for ii=2:numel(data_list)
+
+   
+   pre_df =  data_list{ii}.filled_data; 
+   
+   pre_df.RatID = string(repelem(data_list{ii}.RatID, ...
+                                  size(pre_df, 1), 1));
+
+   
+   filled_behavior = vertcat(filled_behavior, pre_df);
+   
+    
+end
+
+% save
+writetable(filled_behavior, 'data\filled_behavior_df.csv')
+
+
 %% Compute Latencies and Duration
 
 my_latencies = cellfun(@latency_to_behavior, data_list, 'UniformOutput', false);

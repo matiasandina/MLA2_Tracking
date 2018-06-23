@@ -1,21 +1,26 @@
 
 
+
 df <- read.csv(file = 'Annotator/data/df.csv', stringsAsFactors = F)
 
-library(ggplot2)
-library(dplyr)
 
-behaviors_to_keep <- c('Hover-over', 'Nesting', 'Retrieving',
-                       'Self-Groom', 'Snif', 'Rearing')
+# Set the behavior levels
+behaviors_to_keep <- factor(c('Hover-over', 'Nesting', 'Retrieving',
+                       'Self-Groom', 'Snif', 'Rearing'), 
+                       levels=c('Retrieving', 'Hover-over', 
+                                'Nesting', 'Snif', 'Rearing', 'Self-Groom'))
+
+df$behavior <- factor(df$behavior, levels=levels(behaviors_to_keep))
+
 
 duration_plot <- ggplot(filter(df, behavior %in% behaviors_to_keep),
                          aes(behavior, duration, fill=Group)) +
                     geom_boxplot(lwd=0.7, color='gray50') +
                     scale_fill_manual(values = c("white", "black"))+
-                    geom_point(size= 1.5, position = position_dodge(.75)) +
-                    geom_point(size= 1.5, shape = 1, position=position_dodge(.75),
+                    geom_point(size= 3, position = position_dodge(.75)) +
+                    geom_point(size= 3, shape = 1, position=position_dodge(.75),
                               colour = "white")+
-                    theme_classic() +
+#                    theme_classic() +
                     theme(text = element_text(size=20),
                           legend.position = 'bottom') +
                     xlab('') + ylab('Duration (frames)')
@@ -88,7 +93,7 @@ library(multcomp)
 # Multiple Tukey comparisons
 comp_model <- glht(mod1, linfct=mcp(inter ="Tukey"))
 summary(comp_model)
-cld(comp_model) # letras de significación
+cld(comp_model) # letras de significaci?n
 
 
 
@@ -96,8 +101,16 @@ cld(comp_model) # letras de significación
 plot(mod1)
 
 
-# Sniffing
+# Sniffing latency
 car::leveneTest(latency~Group, data=filter(df_stats, behavior=="Snif"))
 
 # Sniffing not significant
 t.test(latency~Group, data=filter(df_stats, behavior=="Snif"))
+
+# Sniffing duration
+car::leveneTest(duration~Group, data=filter(df_stats, behavior=="Snif"))
+
+# Sniffing not significant
+t.test(duration~Group, data=filter(df_stats, behavior=="Snif"))
+
+wilcox.test(duration~Group, data=filter(df_stats, behavior=="Snif"))

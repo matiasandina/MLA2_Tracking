@@ -17,6 +17,8 @@ if(!exists("read_rat_smooth", mode="function")) source("read_rat_smooth.R")
 if(!exists("pair_xy_dist", mode="function")) source("pair_xy_dist.R")
 if(!exists("MajorAxis_median", mode="function")) source("MajorAxis_median.R")
 if(!exists("custom_2d_hist", mode="function")) source("custom_2d_hist.R")
+if(!exists("count_quadrant", mode="function")) source("count_quadrant.R")
+
 
 # Get animals that have been ran
 ran_animals <- read.csv('MLA_Animal_Video_Key.csv', stringsAsFactors = T)
@@ -206,87 +208,93 @@ wilcox.test(together_percent ~ Group, data=quadrant_df)
 # This is significant but by very little
 car::leveneTest(quadrant_df$together_percent, quadrant_df$Group)
 
-
+### PUP-PUP DISTANCE OLD -- SKIP ALL BELOW #####
 
 # Calculate distance between pups (pup to pup distance)
 # We take the blue pup as reference
+# This is old, partially wrong (pup distance is not doing perimeter) and slow.
+# Commented and kept for record keeping. 
+# If you want to run, read carefully
 
-between_pup_dist <- function(mydata){
-  
-  data_to_dist <- lapply(mydata, function(t) t[,1:2])
-  
-  
-  # Here data_to_dist[[2]] means blue pup as reference!
-  pup_dist <- lapply(data_to_dist[3:4],
-                         function(q) pair_xy_dist(data_to_dist[[2]], q))
-  
-  pup_dist <- bind_cols(pup_dist)
-  pup_dist <- pup_dist %>% mutate(frameID = 1:nrow(pup_dist))
-  
-  return(pup_dist)
-  
-}
-
-between_pup <- lapply(xy_pos, function(qq) between_pup_dist(qq))
-
-# Fix the names
-
-for(i in 1:length(between_pup)){
-  fix_these_names<-names(between_pup[[i]])
-  names(between_pup[[i]]) <- fix_pup_names(fix_these_names)
-}
-
-# Plot distance vs frame 
-
-between_pup %>% bind_rows(.id="RatID") %>%
-  group_by(RatID, frameID) %>% mutate(between_pup_dist = green_pup + red_pup) %>%
-  select(RatID, frameID, between_pup_dist) %>%
-  left_join(distance_df) %>%
-  left_join(ran_animals) %>%
-  ggplot(aes(frameID, total_dist, color=Group))+
-  geom_line() +
-  geom_line(aes(frameID, between_pup_dist), color='black', lty=2) + facet_wrap(~RatID)
-  
-ggplot(distance_df, aes(frameID, mean_dist))+
-  geom_line() + facet_wrap(~RatID)
-
-## Difference in pup distance from first to last frame
-
-first_to_last <- between_pup %>% bind_rows(.id="RatID") %>%
-  group_by(RatID, frameID) %>% mutate(between_pup_dist = green_pup + red_pup) %>%
-  filter(frameID %in% c(1, 9001)) %>%
-  ungroup() %>% group_by(RatID) %>%
-  summarise(diff_dist = diff(between_pup_dist)) %>%
-  left_join(ran_animals)
-
-
-# Plot the change in pup-pup distance
-
-pup_pup_plot <-  ggplot(first_to_last,
-                               aes(Group, diff_dist, color=Group)) +
-  stat_summary(fun.y = median, fun.ymin = median,
-               fun.ymax = median, geom = "crossbar",
-               color = "gray50", size = 0.5, width=0.5) +
-  geom_point(size=2, alpha=0.8) + 
-  geom_point(shape=1, size=2, color='black')+
-  scale_color_manual(values=c('white', 'black')) + 
-  xlab('') + ylab('Total Change in pup-pup distance') +
-  theme(text = element_text(size=20)) +
-  theme(legend.position = 'none')+
-  geom_hline(yintercept=0, lty=2)+
-  theme(axis.line.x = element_line(color="black", size = 1))
+# between_pup_dist <- function(mydata){
+#   
+#   data_to_dist <- lapply(mydata, function(t) t[,1:2])
+#   
+#   
+#   # Here data_to_dist[[2]] means blue pup as reference!
+#   pup_dist <- lapply(data_to_dist[3:4],
+#                          function(q) pair_xy_dist(data_to_dist[[2]], q))
+#   
+#   pup_dist <- bind_cols(pup_dist)
+#   pup_dist <- pup_dist %>% mutate(frameID = 1:nrow(pup_dist))
+#   
+#   return(pup_dist)
+#   
+# }
+# 
+# between_pup <- lapply(xy_pos, function(qq) between_pup_dist(qq))
+# 
+# # Fix the names
+# 
+# for(i in 1:length(between_pup)){
+#   fix_these_names<-names(between_pup[[i]])
+#   names(between_pup[[i]]) <- fix_pup_names(fix_these_names)
+# }
+# 
+# # Plot distance vs frame 
+# 
+# between_pup %>% bind_rows(.id="RatID") %>%
+#   group_by(RatID, frameID) %>% mutate(between_pup_dist = green_pup + red_pup) %>%
+#   select(RatID, frameID, between_pup_dist) %>%
+#   left_join(distance_df) %>%
+#   left_join(ran_animals) %>%
+#   ggplot(aes(frameID, total_dist, color=Group))+
+#   geom_line() +
+#   geom_line(aes(frameID, between_pup_dist), color='black', lty=2) + facet_wrap(~RatID)
+#   
+# ggplot(distance_df, aes(frameID, mean_dist))+
+#   geom_line() + facet_wrap(~RatID)
+# 
+# ## Difference in pup distance from first to last frame
+# 
+# first_to_last <- between_pup %>% bind_rows(.id="RatID") %>%
+#   group_by(RatID, frameID) %>% mutate(between_pup_dist = green_pup + red_pup) %>%
+#   filter(frameID %in% c(1, 9001)) %>%
+#   ungroup() %>% group_by(RatID) %>%
+#   summarise(diff_dist = diff(between_pup_dist)) %>%
+#   left_join(ran_animals)
 
 
-t.test(diff_dist~Group, data=first_to_last)
-
-# SD112 was particularly not responsive to pups (even when tested twice)
-# p value makes more sense here
-t.test(diff_dist~Group, data=filter(first_to_last, RatID!="SD112"))
+# # Plot the change in pup-pup distance
+# 
+# pup_pup_plot <-  ggplot(first_to_last,
+#                                aes(Group, diff_dist, color=Group)) +
+#   stat_summary(fun.y = median, fun.ymin = median,
+#                fun.ymax = median, geom = "crossbar",
+#                color = "gray50", size = 0.5, width=0.5) +
+#   geom_point(size=2, alpha=0.8) + 
+#   geom_point(shape=1, size=2, color='black')+
+#   scale_color_manual(values=c('white', 'black')) + 
+#   xlab('') + ylab('Total Change in pup-pup distance') +
+#   theme(text = element_text(size=20)) +
+#   theme(legend.position = 'none')+
+#   geom_hline(yintercept=0, lty=2)+
+#   theme(axis.line.x = element_line(color="black", size = 1))
+# 
+# 
+# t.test(diff_dist~Group, data=first_to_last)
+# 
+# # SD112 was particularly not responsive to pups (even when tested twice)
+# # p value makes more sense here
+# t.test(diff_dist~Group, data=filter(first_to_last, RatID!="SD112"))
 
 
 ### Pup-pup distance as coded above is wrong!
 ### Having the blue pup fixed is problematic, 
 ### we are not calculating the perimeter of the triangle, just 2 sides!
+
+
+### Perimeter and Area calculations #####
 
 library(pracma)
 
@@ -341,14 +349,38 @@ XY_df %>%
   theme_void()
 
 
-XY_df %>%
+### Paired perimeter and area plots #####
+
+paired_perimeter <- XY_df %>%
   filter(animal!=RatID, frameID %in% c(1, 9001)) %>%
   group_by(RatID, frameID) %>%
   summarise(area = abs(polyarea(X,Y)), 
             perimeter = xy_perimeter(X,Y)) %>%
   left_join(ran_animals) %>%
   ggplot(aes(factor(frameID), perimeter, color=Group, group=RatID)) +
-  geom_point() + geom_line() + facet_wrap(~Group)
+  geom_line(lwd=0.75) +
+  geom_point() +
+  geom_point(shape=1, size=2, color='black')+
+  facet_wrap(~Group) +
+  scale_color_manual(values=c('white', 'black'))+
+  theme(legend.position = 'none')
+
+
+paired_area <- XY_df %>%
+  filter(animal!=RatID, frameID %in% c(1, 9001)) %>%
+  group_by(RatID, frameID) %>%
+  summarise(area = abs(polyarea(X,Y)), 
+            perimeter = xy_perimeter(X,Y)) %>%
+  left_join(ran_animals) %>%
+  ggplot(aes(factor(frameID), area, color=Group, group=RatID)) +
+  geom_line(lwd=0.75) +
+  geom_point() +
+  geom_point(shape=1, size=2, color='black')+
+  facet_wrap(~Group) +
+  scale_color_manual(values=c('white', 'black'))+
+  theme(legend.position = 'none')
+
+### Get the pup_triangle data frame for further plotting
 
 pup_triangle <- XY_df %>%
   filter(animal!=RatID, frameID %in% c(1, 9001)) %>%
@@ -360,9 +392,35 @@ pup_triangle <- XY_df %>%
             diff_perim = diff(perimeter)) %>%
   left_join(ran_animals)
 
-ggplot(pup_triangle, aes(Group, diff_perim)) + geom_point() 
+perimeter_difference_plot <- ggplot(pup_triangle, aes(Group, diff_perim, color=Group)) +
+                             geom_point() +
+    stat_summary(fun.y = median, fun.ymin = median,
+                 fun.ymax = median, geom = "crossbar",
+                 color = "gray50", size = 0.5, width=0.5) +
+    geom_point(size=2, alpha=0.8) +
+    geom_point(shape=1, size=2, color='black')+
+    scale_color_manual(values=c('white', 'black')) +
+    xlab('') + ylab('Total Change in pup-pup distance') +
+    theme(text = element_text(size=20)) +
+    theme(legend.position = 'none')+
+    geom_hline(yintercept=0, lty=2)+
+    theme(axis.line.x = element_line(color="black", size = 1))
 
-ggplot(pup_triangle, aes(Group, diff_area)) + geom_point() 
+
+area_difference_plot <- ggplot(pup_triangle, aes(Group, diff_area, color=Group)) +
+                        geom_point() +
+                        stat_summary(fun.y = median, fun.ymin = median,
+                                     fun.ymax = median, geom = "crossbar",
+                                     color = "gray50", size = 0.5, width=0.5) +
+                        geom_point(size=2, alpha=0.8) +
+                        geom_point(shape=1, size=2, color='black')+
+                        scale_color_manual(values=c('white', 'black')) +
+                        xlab('') + ylab('Total Change in area') +
+                        theme(text = element_text(size=20)) +
+                        theme(legend.position = 'none')+
+                        geom_hline(yintercept=0, lty=2)+
+                        theme(axis.line.x = element_line(color="black", size = 1))
+
 
 t.test(diff_perim~Group, data=pup_triangle)
 wilcox.test(diff_perim~Group, data=pup_triangle)
@@ -371,6 +429,8 @@ t.test(diff_area~Group, data=pup_triangle)
 wilcox.test(diff_area~Group, data=pup_triangle)
 
 
+### We can think about it in a repeated measures set-up
+### Let's do some lineplots
 ### Selecting 9 time points in the test
 
 
@@ -380,55 +440,154 @@ all_frames <- XY_df %>%
   summarise(area = abs(polyarea(X,Y)), 
             perimeter = xy_perimeter(X,Y))
 
-ggplot(filter(left_join(all_frames,ran_animals),
+### Perimeter vs frameID line plot ####
+
+
+sem <- function(x){
+  n <- length(x)
+  
+  out <- sd(x)/sqrt(n)
+}
+
+perimeter_large_plot <- ggplot(filter(left_join(all_frames,ran_animals),
               frameID %in% seq(1,9001,1000)),
        aes(frameID, perimeter, color= Group, fill=Group)) +
-  stat_summary(fun.y = mean, geom='line') +
+    stat_summary(fun.y = mean,
+               fun.ymin = function(x) mean(x) - sem(x),
+               fun.ymax = function(x) mean(x) + sem(x),
+               geom = "ribbon", alpha=0.1, color=NA) + 
+  stat_summary(fun.y = mean, geom='line', lwd=1.2) +
+  stat_summary(fun.y = mean, geom='point', size=3)+
+  scale_color_manual(values=c('white', 'black'))+
+  scale_fill_manual(values=c('gray20', 'gray20'))+
+  theme(legend.position = 'none')
+
+
+## Area vs frameID line plot ##### 
+
+area_large_plot <- ggplot(filter(left_join(all_frames,ran_animals),
+              frameID %in% seq(1,9001,1000)),
+       aes(frameID, area, color= Group, fill=Group)) +
   stat_summary(fun.y = mean,
-               fun.ymin = function(x) mean(x) - sd(x),
-               fun.ymax = function(x) mean(x) + sd(x),
-               geom = "ribbon", alpha=0.2, color=NA)
+               fun.ymin = function(x) mean(x) - sem(x),
+               fun.ymax = function(x) mean(x) + sem(x),
+               geom = "ribbon", alpha=0.1, color=NA) + 
+  stat_summary(fun.y = mean, geom='line', lwd=1.2) +
+  stat_summary(fun.y = mean, geom='point', size=3)+
+  scale_color_manual(values=c('white', 'black'))+
+  scale_fill_manual(values=c('gray20', 'gray20'))+
+  theme(legend.position = 'none')
+  
+
+#### Animate changes ---- Not very clear ####
+
+# library(gganimate)
+# library(magick)
+# 
+# data_to_animate <- filter(left_join(all_frames,ran_animals),
+#                           frameID %in% seq(1,9001,1000))
+# 
+# frame_list <- split(data_to_animate, data_to_animate$frameID) 
+# 
+# img <- image_graph(res = 96)
+# 
+# out <- lapply(frame_list, function(data){
+# animated_plot <- ggplot(data,
+#                  aes(area, perimeter, color= Group)) +
+#                 geom_point() + ggtitle(data$frameID) +
+#                 scale_x_continuous(limits=range(data_to_animate$area))+
+#                 scale_y_continuous(limits=range(data_to_animate$perimeter))
+# print(animated_plot)
+# })
+# dev.off()
+# animation <- image_animate(img, fps = 2)
+# image_write(animation, "animation.gif")
 
 
-library(gganimate)
-library(magick)
+## Show a facet version of the development  
 
 data_to_animate <- filter(left_join(all_frames,ran_animals),
                           frameID %in% seq(1,9001,1000))
 
-frame_list <- split(data_to_animate, data_to_animate$frameID) 
+data_two <- filter(left_join(all_frames,ran_animals),
+                   frameID %in% c(1,9001)) %>%
+                   ungroup()
 
-img <- image_graph(res = 96)
-
-out <- lapply(frame_list, function(data){
-animated_plot <- ggplot(data,
-                 aes(area, perimeter, color= Group)) +
-                geom_point() + ggtitle(data$frameID) +
-                scale_x_continuous(limits=range(data_to_animate$area))+
-                scale_y_continuous(limits=range(data_to_animate$perimeter))
-print(animated_plot)
-})
-dev.off()
-animation <- image_animate(img, fps = 2)
-image_write(animation, "animation.gif")
+# Transform frameID into factor
+data_two$frameID <- factor(data_two$frameID)
+# Make an interaction that we will use for the model later
+data_two$interaction <- interaction(data_two$Group, data_two$frameID)
 
 
-## This facet version is better
+### Do some stats
 
-ggplot(data_to_animate, aes(area, perimeter, fill=Group)) +
+
+library(nlme)
+
+model = lme(perimeter ~ frameID + Group + frameID*Group, 
+            random = ~1|RatID,
+            correlation = corAR1(form = ~ frameID | RatID),
+            data=data_to_animate,
+            method="REML")
+
+library(car)
+
+Anova(model)
+
+
+library(multcompView)
+
+library(lsmeans)
+
+marginal = lsmeans(model, 
+                   ~ Group:frameID)
+
+cld(marginal,
+    alpha   = 0.05, 
+    Letters = letters,     ### Use lower-case letters for .group
+    adjust  = "tukey")     ###  Tukey-adjusted comparisons
+
+
+model2 = lme(perimeter ~ frameID + Group + frameID*Group, 
+            random = ~1|RatID,
+            data=data_two,
+            method="REML")
+
+
+# Also check this lmer 
+
+
+
+model2 <- lme4::lmer(perimeter ~ interaction + (1|RatID), data=data_two)
+
+
+marginal <- glht(model2, linfct=mcp(interaction = "Tukey"))
+
+cld(marginal,
+    alpha   = 0.05, 
+    Letters = letters,     ### Use lower-case letters for .group
+    adjust  = "tukey")     ###  Tukey-adjusted comparisons
+
+
+# This plot has all the data and animates by frame
+# Might be confusing/hard to read
+
+ggplot(data_to_animate, aes(sqrt(area), perimeter, fill=Group)) +
   geom_point(data=select(data_to_animate,-frameID), alpha=0.5) +
   geom_point(aes(color=Group)) +
   facet_wrap(~frameID)+
   theme_bw() 
 
-ggplot(data_to_animate, aes(area, perimeter, fill=Group, group=Group)) +
-     geom_point(data=select(data_to_animate,-frameID), alpha=0.5) +
-     geom_point(aes(color=Group)) +
-     facet_wrap(~frameID)+
-     theme_bw() + 
-     geom_smooth(method="lm", se=TRUE, fill=NA,
-                 formula=y ~ poly(x, 3, raw=TRUE), aes(color=Group))
+# Same as above but with a cubic trendline
+# ggplot(data_to_animate, aes(area, perimeter, fill=Group, group=Group)) +
+#      geom_point(data=select(data_to_animate,-frameID), alpha=0.5) +
+#      geom_point(aes(color=Group)) +
+#      facet_wrap(~frameID)+
+#      theme_bw() + 
+#      geom_smooth(method="lm", se=TRUE, fill=NA,
+#                  formula=y ~ poly(x, 3, raw=TRUE), aes(color=Group))
 
+# This plot is more clear...still difficult to read
 
 ggplot(data_to_animate, aes(sqrt(area), perimeter, fill=Group, group=Group)) +
 #  geom_point(data=select(data_to_animate,-frameID), alpha=0.5) +
@@ -440,20 +599,20 @@ ggplot(data_to_animate, aes(sqrt(area), perimeter, fill=Group, group=Group)) +
 
 
 # With density plots on the side...
-# Quite a lot of overlap
+# Quite a lot of overlap... not very useful
 
-p <- ggplot(filter(data_to_animate, frameID==9001),
-       aes(sqrt(area), perimeter, fill=Group, group=Group)) +
-  geom_point(aes(color=Group)) +
-  theme_dark() + 
-  scale_color_manual(values=c('white', 'gray10'))+
-  geom_rug(aes(color=Group), size=1) +
-  scale_x_continuous(limits=range(sqrt(data_to_animate$area)))+
-  scale_y_continuous(limits=range(data_to_animate$perimeter)) +
-  theme(legend.position = "bottom")
-
-
-ggExtra::ggMarginal(p, groupFill =  TRUE)
+# p <- ggplot(filter(data_to_animate, frameID==9001),
+#        aes(sqrt(area), perimeter, fill=Group, group=Group)) +
+#   geom_point(aes(color=Group)) +
+#   theme_dark() + 
+#   scale_color_manual(values=c('white', 'gray10'))+
+#   geom_rug(aes(color=Group), size=1) +
+#   scale_x_continuous(limits=range(sqrt(data_to_animate$area)))+
+#   scale_y_continuous(limits=range(data_to_animate$perimeter)) +
+#   theme(legend.position = "bottom")
+# 
+# 
+# ggExtra::ggMarginal(p, groupFill =  TRUE)
 
 ### 2d_histogram_plots 
 
@@ -520,11 +679,25 @@ my_density_plot <- ggplot(bins_to_plot, aes(Var1, Var2, fill = value)) +
 
 
 
-first_row <- cowplot::plot_grid(my_density_plot, labels = "A")
-second_row <- cowplot::plot_grid(close_fraction_plot, together_fraction_plot, pup_pup_plot,
-                        labels= c("B", "C", "D"), axis='B' , align='h', 
+first_row <- cowplot::plot_grid(my_density_plot, labels = "B")
+second_row <- cowplot::plot_grid(close_fraction_plot,
+                                 together_fraction_plot,
+                                 labels= c("C", "D"), axis='B' , align='h', 
                         nrow=1)
 
+third_row <- cowplot::plot_grid(area_large_plot,
+                                paired_area,
+                                area_difference_plot,
+                                labels= c("E", "F", "G"), axis='B' , align='h', 
+                                nrow=1,
+                                rel_widths = c(2,2,1))
+fourth_row <- cowplot::plot_grid(perimeter_large_plot,
+                                 paired_perimeter,
+                                 perimeter_difference_plot,
+                                 labels=c("H", "I", "J"), axis="B", align = "h",
+                                 nrow=1,
+                                 rel_widths = c(2,2,1))
 
-cowplot::plot_grid(first_row, second_row, ncol=1)
+
+cowplot::plot_grid(third_row, fourth_row, ncol=1)
 
