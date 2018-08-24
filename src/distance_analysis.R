@@ -422,9 +422,12 @@ area_difference_plot <- ggplot(pup_triangle, aes(Group, diff_area, color=Group))
                         theme(axis.line.x = element_line(color="black", size = 1))
 
 
+
+car::leveneTest(pup_triangle$diff_perim, pup_triangle$Group)
 t.test(diff_perim~Group, data=pup_triangle)
 wilcox.test(diff_perim~Group, data=pup_triangle)
 
+car::leveneTest(pup_triangle$diff_area, pup_triangle$Group)
 t.test(diff_area~Group, data=pup_triangle)
 wilcox.test(diff_area~Group, data=pup_triangle)
 
@@ -449,19 +452,42 @@ sem <- function(x){
   out <- sd(x)/sqrt(n)
 }
 
+
+# This is the mean plot
+# It looks better than the median plot by far
+
 perimeter_large_plot <- ggplot(filter(left_join(all_frames,ran_animals),
               frameID %in% seq(1,9001,1000)),
        aes(frameID, perimeter, color= Group, fill=Group)) +
     stat_summary(fun.y = mean,
                fun.ymin = function(x) mean(x) - sem(x),
                fun.ymax = function(x) mean(x) + sem(x),
-               geom = "ribbon", alpha=0.1, color=NA) + 
+               geom = "ribbon", alpha=0.1, color=NA) +
   stat_summary(fun.y = mean, geom='line', lwd=1.2) +
   stat_summary(fun.y = mean, geom='point', size=3)+
   scale_color_manual(values=c('white', 'black'))+
   scale_fill_manual(values=c('gray20', 'gray20'))+
   theme(legend.position = 'none')
 
+
+# perimeter_large_plot <- ggplot(data_to_animate,
+#                         aes(frameID, perimeter, color= Group, fill=Group)) +
+#                             stat_summary(fun.y = mean,
+#                             fun.ymin = function(x) quantile(x)[2],
+#                             fun.ymax = function(x) quantile(x)[4],
+#                             geom = "ribbon", alpha=0.1, color=NA) +
+#                               stat_summary(fun.y = mean, geom='line', lwd=1.2) +
+#                               stat_summary(fun.y = mean, geom='point', size=3)+
+#                               scale_color_manual(values=c('white', 'black'))+
+#                               scale_fill_manual(values=c('gray20', 'gray20'))+
+#                               theme(legend.position = 'none')
+
+
+# We can check with this boxplot that the IQR looks too wide
+# ggplot(data_to_animate,
+#  aes(factor(frameID), perimeter, fill=Group)) +
+#  geom_boxplot()
+                                      
 
 ## Area vs frameID line plot ##### 
 
@@ -548,7 +574,7 @@ cld(marginal,
     adjust  = "tukey")     ###  Tukey-adjusted comparisons
 
 
-model2 = lme(perimeter ~ frameID + Group + frameID*Group, 
+model2 = lme(perimeter ~ interaction, 
             random = ~1|RatID,
             data=data_two,
             method="REML")
@@ -556,11 +582,11 @@ model2 = lme(perimeter ~ frameID + Group + frameID*Group,
 
 # Also check this lmer 
 
-
-
 model2 <- lme4::lmer(perimeter ~ interaction + (1|RatID), data=data_two)
 
+model2_area<- lme4::lmer(area ~ interaction + (1|RatID), data=data_two)
 
+library(multcomp)
 marginal <- glht(model2, linfct=mcp(interaction = "Tukey"))
 
 cld(marginal,
