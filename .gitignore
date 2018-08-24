@@ -6,7 +6,9 @@
 .Ruserdata
 .svg
 .mat
-.html
+*.html
+*.pdf
+*.svg
 
 # Ignore Data
 
