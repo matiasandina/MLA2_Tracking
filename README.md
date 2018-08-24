@@ -13,8 +13,9 @@ This is the code used to record, track and analyze animal position for MLA2 expe
 1. Save a **new** copy of the .bonsai with specific HSV parameters for record keeping.
 1. Create a duplicate of the data to further process. The script `bonsai_parser_cleanUP.R` will move raw data to `./data` folder and create animal folders. **This script needs the working directory to be** `./src`
 1. Move to MATLAB. Run the script `workflow_track.m`. **This script needs the working directory to be:** `./src`
-1. Double check in MATLAB/R the plots for the traces.
-1. If correct, move on, else further smoothdata or do manual corrections.
+1. Double check in MATLAB/R the plots for the traces. Many options here. You can do this directly in matlab using `plot` and the `rloess_smooth` object or in R using the `ideas_plot.R` script, which allows to run a single animal through the heatmap graphs. You can also use `custom_2d_hist.R` and filter by `RatID`.
+1. If correct, move on, else proceed to further `smoothdata()` or do manual corrections.
+1. Make a `manual fix for rat.txt` note of further smoothing in the folder that contains the final output (`.src/data/RatID`). Avoid using RatID or other information in the name of the manual note to prevent problems with the functions that match filenames to these values in the analysis code. 
 1. Data analysis is done in R with `distance_analysis.R` and others.
 
 
