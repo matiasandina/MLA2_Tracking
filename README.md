@@ -1,7 +1,7 @@
 # MLA2_Tracking
 
 This is the code used to record, track and analyze animal position for MLA2 experiment.
-
+To use this code in a **new** experiment, fork or download from the Github repository and start over with new data there.
 
 ## Workflow outline
 
@@ -10,6 +10,9 @@ This is the code used to record, track and analyze animal position for MLA2 expe
 1. Bonsai: Go to the workflow for tracking, e.g, `Bonsai_Workflow_MLA_2018-03-13T23_06_11`
 1. Adjust parameters for HSV transform, areas, ...
 1. Run the tracking. Data will be saved on `./raw_data/raw_data` folder. 
+
+> Be careful! If you want to re-run already analyzed files, make sure you change the saving directory on Bonsai. This will prevent overwritting files. You are advised to make a back-up copy of the video folder.
+
 1. Save a **new** copy of the .bonsai with specific HSV parameters for record keeping.
 1. Create a duplicate of the data to further process. The script `bonsai_parser_cleanUP.R` will move raw data to `./data` folder and create animal folders. **This script needs the working directory to be** `./src`
 1. Move to MATLAB. Run the script `workflow_track.m`. **This script needs the working directory to be:** `./src`
